@@ -17,7 +17,17 @@ class AudioService:
         """Downloads audio from YouTube and returns the file path."""
         print(f"[AudioService] Downloading: {url}")
         
-        cookies_path = os.path.join(os.getcwd(), 'cookies.txt')
+        # Check for cookies.txt in multiple locations
+        cookies_paths = [
+            os.path.join(os.getcwd(), 'cookies.txt'),           # App root
+            '/etc/secrets/cookies.txt',                          # Render secret files
+        ]
+        
+        cookies_path = None
+        for path in cookies_paths:
+            if os.path.exists(path):
+                cookies_path = path
+                break
         
         download_cmd = [
             'yt-dlp', 
@@ -29,7 +39,7 @@ class AudioService:
         ]
 
         # Use cookies if available
-        if os.path.exists(cookies_path):
+        if cookies_path:
             print(f"[AudioService] Using cookies from: {cookies_path}")
             download_cmd.extend(['--cookies', cookies_path])
         else:
