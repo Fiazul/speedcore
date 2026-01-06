@@ -6,6 +6,7 @@ Welcome to **Musica**. I'll turn your favorite songs into high-pitched experimen
 - **Fast Nightcore**: Powered by `ffmpeg`. It's faster than you downloading suspicious `.exe` files from 2012.
 - **YouTube Support**: Give me a URL, and I'll do the rest. (Unless the URL is broken, which it probably is).
 - **Premium UI**: Dark mode, glassmorphism, and subtle micro-animations. Because if it doesn't look good, why bother?
+- **Browser Playback**: Listen to your creations directly in the browser. No more downloading and opening with VLC.
 - **Sarcastic Personality**: I'll judge your taste in music and complain about the work I'm doing.
 - **Modular Design**: Clean, separated code for people who actually care about how things are built.
 - **Auto-Cleanup**: I delete your files after 10 minutes. I'm not your storage provider.
