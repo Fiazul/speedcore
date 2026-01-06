@@ -621,16 +621,25 @@
                     body: JSON.stringify({ content })
                 });
                 
-                const data = await res.json();
-                if (res.ok) {
-                    cookieStatus.textContent = "✅ " + data.message;
-                    cookieStatus.style.color = "var(--primary)";
-                    setTimeout(() => cookieModal.classList.add('hidden'), 1500);
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const data = await res.json();
+                    if (res.ok) {
+                        cookieStatus.textContent = "✅ " + data.message;
+                        cookieStatus.style.color = "var(--primary)";
+                        setTimeout(() => cookieModal.classList.add('hidden'), 1500);
+                    } else {
+                        cookieStatus.textContent = "❌ " + data.detail;
+                        cookieStatus.style.color = "var(--error)";
+                    }
                 } else {
-                    cookieStatus.textContent = "❌ " + data.detail;
+                    const text = await res.text();
+                    console.error("Non-JSON response:", text);
+                    cookieStatus.textContent = "❌ Server Error (Check Console)";
                     cookieStatus.style.color = "var(--error)";
                 }
             } catch (e) {
+                console.error(e);
                 cookieStatus.textContent = "❌ Network Error";
                 cookieStatus.style.color = "var(--error)";
             } finally {
