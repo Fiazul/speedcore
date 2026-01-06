@@ -28,14 +28,20 @@ Don't come crying to me if it doesn't work.
 1. **Clone this repository** (If you know how to use git).
 2. **Install system dependencies**:
    ```bash
-   sudo apt update && sudo apt install ffmpeg
+   # Update and install ffmpeg
+   sudo apt-get update && sudo apt-get install -y ffmpeg
    ```
-3. **Set up a virtual environment**:
+3. **Install Python tools**:
+   ```bash
+   # Ensure yt-dlp is available
+   pip install yt-dlp
+   ```
+4. **Set up a virtual environment**:
    ```bash
    python -m venv venv
    source venv/bin/activate
    ```
-4. **Install Python dependencies**:
+5. **Install requirements**:
    ```bash
    pip install -r requirements.txt
    ```
