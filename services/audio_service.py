@@ -28,14 +28,13 @@ class AudioService:
             '--extractor-args', 'youtube:player_client=ios,android_creator;player_skip=webpage,configs',
         ]
 
-        # Try cookies in order of preference
+        # Use cookies if available
         if os.path.exists(cookies_path):
             print(f"[AudioService] Using cookies from: {cookies_path}")
             download_cmd.extend(['--cookies', cookies_path])
         else:
-            # Fallback: try to extract cookies from browser automatically
-            print("[AudioService] No cookies.txt found, attempting to extract from browser...")
-            download_cmd.extend(['--cookies-from-browser', 'chrome'])
+            print("[AudioService] WARNING: No cookies.txt found. YouTube may block this request.")
+            print("[AudioService] To fix: Export cookies from your browser and place cookies.txt in the project root.")
         
         download_cmd.extend([
             url,
