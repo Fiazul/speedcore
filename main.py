@@ -5,9 +5,16 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 import random
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+
 from api.routes import router
 from services.cleanup_service import start_cleanup_service
 from core.config import APP_TITLE, VERSION, SARCASM_ERROR
+
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -19,6 +26,8 @@ async def lifespan(app: FastAPI):
     print(f"Shutting down {APP_TITLE}...")
 
 app = FastAPI(title=APP_TITLE, version=VERSION, lifespan=lifespan)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Include API routes
 app.include_router(router)
@@ -37,6 +46,17 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
             "success": False,
             "error": error_msg,
             "sarcasm": random.choice(SARCASM_ERROR)
+        }
+    )
+
+@app.exception_handler(RateLimitExceeded)
+async def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
+    return JSONResponse(
+        status_code=200, # Keep it 200 for frontend to handle as normal fail
+        content={
+            "success": False,
+            "error": "Slow down! 2 requests per minute. I'm not a robot (actually I am, but a busy one).",
+            "sarcasm": "Stop spamming me. My CPU is sensitive."
         }
     )
 
