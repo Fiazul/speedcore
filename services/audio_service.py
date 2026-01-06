@@ -50,12 +50,19 @@ class AudioService:
             raise AudioProcessingError(str(e))
 
     @staticmethod
-    def process_nightcore(input_path: str, params: dict) -> str:
-        """Processes the audio file into nightcore using ffmpeg."""
+    def process_nightcore(input_path: str, params: dict) -> tuple[str, str]:
+        """Processes the audio file into nightcore using ffmpeg. Returns (nightcore_name, original_name)."""
         print(f"[AudioService] Processing: {input_path}")
         
         mode = params.get('mode', 'custom')
         format_ext = params.get('format', 'flac')
+        timestamp = int(time.time())
+        
+        # Rename original file to something more permanent/identifiable
+        original_ext = Path(input_path).suffix
+        original_name = f"original_{timestamp}{original_ext}"
+        original_path = os.path.join(TEMP_FOLDER, original_name)
+        os.rename(input_path, original_path)
         
         if mode == 'vocalfree':
             audio_filter = 'pan=stereo|c0=c0-c1|c1=c1-c0,highpass=f=120,lowpass=f=16000'
@@ -74,12 +81,12 @@ class AudioService:
             
             audio_filter = ','.join(filter_parts)
 
-        output_name = f"nightcore_{int(time.time())}.{format_ext}"
+        output_name = f"nightcore_{timestamp}.{format_ext}"
         output_path = os.path.join(TEMP_FOLDER, output_name)
         
         codec_opts = ['-c:a', 'libmp3lame', '-q:a', '0'] if format_ext == 'mp3' else ['-c:a', 'flac', '-compression_level', '8']
         
-        ffmpeg_cmd = ['ffmpeg', '-y', '-i', input_path, '-filter:a', audio_filter] + codec_opts + [output_path]
+        ffmpeg_cmd = ['ffmpeg', '-y', '-i', original_path, '-filter:a', audio_filter] + codec_opts + [output_path]
         
         try:
             result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, timeout=300)
@@ -90,11 +97,8 @@ class AudioService:
             if not os.path.exists(output_path):
                 raise AudioProcessingError("Output file was not created.")
                 
-            return output_name
+            return output_name, original_name
             
         except subprocess.TimeoutExpired:
             raise AudioProcessingError("Processing timed out. This song is probably too long for me to care.")
-        finally:
-            # Clean up the original downloaded file
-            if os.path.exists(input_path):
-                os.remove(input_path)
+        # Removed the os.remove(input_path) in finally block

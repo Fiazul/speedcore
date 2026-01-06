@@ -14,5 +14,6 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     success: bool
     filename: Optional[str] = None
+    originalFilename: Optional[str] = None
     error: Optional[str] = None
     sarcasm: Optional[str] = None

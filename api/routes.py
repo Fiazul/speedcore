@@ -34,7 +34,7 @@ async def generate(req: GenerateRequest):
             input_path = AudioService.download_audio(req.url)
             
             # Process
-            filename = AudioService.process_nightcore(input_path, req.dict())
+            filename, original_filename = AudioService.process_nightcore(input_path, req.dict())
             
             sarcasm = random.choice(SARCASM_SUCCESS)
             if is_busy:
@@ -43,6 +43,7 @@ async def generate(req: GenerateRequest):
             return GenerateResponse(
                 success=True, 
                 filename=filename, 
+                originalFilename=original_filename,
                 sarcasm=sarcasm
             )
             

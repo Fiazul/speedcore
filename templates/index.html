@@ -497,16 +497,23 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    status.innerHTML = '<div>📥 Downloading to your browser cache...</div>';
+                    status.innerHTML = '<div>📥 Downloading files to your browser cache...</div>';
                     
-                    // Fetch the file and save to IndexedDB
-                    const fileResponse = await fetch(`/download/${data.filename}`);
-                    const blob = await fileResponse.blob();
-                    await saveToLocal(blob, data.filename, data.sarcasm);
+                    // Fetch nightcore
+                    const ncFileResponse = await fetch(`/download/${data.filename}`);
+                    const ncBlob = await ncFileResponse.blob();
+                    await saveToLocal(ncBlob, data.filename, data.sarcasm);
+
+                    // Fetch original if provided
+                    if (data.originalFilename) {
+                        const origFileResponse = await fetch(`/download/${data.originalFilename}`);
+                        const origBlob = await origFileResponse.blob();
+                        await saveToLocal(origBlob, data.originalFilename, "Original audio kept for your convenience.");
+                    }
 
                     status.className = 'status-success';
                     status.innerHTML = `
-                        <div>✅ Done. It's in your "Local Collection" now.</div>
+                        <div>✅ Done. Both original and nightcore are in your "Local Collection".</div>
                         <div class="sarcasm">"${data.sarcasm}"</div>
                     `;
                 } else {
