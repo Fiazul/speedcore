@@ -17,42 +17,16 @@ class AudioService:
         """Downloads audio from YouTube and returns the file path."""
         print(f"[AudioService] Downloading: {url}")
         
-        # Check for cookies.txt in multiple locations
-        cookies_paths = [
-            os.path.join(os.getcwd(), 'cookies.txt'),           # App root
-            '/etc/secrets/cookies.txt',                          # Render secret files
-        ]
-        
-        cookies_path = None
-        for path in cookies_paths:
-            if os.path.exists(path):
-                cookies_path = path
-                break
-        
         download_cmd = [
             'yt-dlp', 
             '-x', 
             '--audio-format', 'flac',
             '--audio-quality', '0',
-            '-f', 'bestaudio/best',  # Explicitly download best available audio source
-            # Aggressive bot bypass (ios client is most reliable)
-            '--extractor-args', 'youtube:player_client=android',
-        ]
-
-        # Use cookies if available
-        if cookies_path:
-            print(f"[AudioService] Using cookies from: {cookies_path}")
-            download_cmd.extend(['--cookies', cookies_path])
-        else:
-            print("[AudioService] WARNING: No cookies.txt found. YouTube may block this request.")
-            print("[AudioService] To fix: Export cookies from your browser and place cookies.txt in the project root.")
-        
-        download_cmd.extend([
             url,
             '-o', f'{TEMP_FOLDER}/%(title)s.%(ext)s',
             '--print', 'after_move:filepath',
             '--no-warnings'
-        ])
+        ]
         
         try:
             result = subprocess.run(download_cmd, capture_output=True, text=True, timeout=300, check=False)

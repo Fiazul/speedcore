@@ -7,17 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ffffff;
-            --primary-hover: #eeeeee;
-            --accent: #888888;
-            --bg: #000000;
-            --card-bg: #111111;
-            --input-bg: #1a1a1a;
-            --text: #ffffff;
-            --text-muted: #888888;
-            --danger: #ffffff;
-            --success: #ffffff;
-            --warning: #ffffff;
+            --primary: #ff66cc;
+            --primary-hover: #ff3399;
+            --accent: #cc66ff;
+            --bg: #0f0f12;
+            --card-bg: #1a1a20;
+            --input-bg: #25252e;
+            --text: #e0e0e0;
+            --text-muted: #88889a;
+            --danger: #ff4d4d;
+            --success: #00ff88;
+            --warning: #ffcc00;
         }
 
         * {
@@ -44,14 +44,14 @@
             padding: 40px;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 102, 204, 0.1);
         }
 
         h1 {
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 10px;
-            background: linear-gradient(45deg, #ffffff, #888888);
+            background: linear-gradient(45deg, var(--primary), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -66,13 +66,13 @@
         }
 
         .beta-warning {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid var(--warning);
             padding: 15px;
             border-radius: 12px;
             margin-bottom: 25px;
             font-size: 0.9rem;
-            color: var(--text);
+            color: var(--warning);
             display: flex;
             align-items: flex-start;
             gap: 10px;
@@ -153,7 +153,7 @@
             background: var(--primary);
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(255, 102, 204, 0.5);
             transition: transform 0.2s;
         }
 
@@ -286,7 +286,7 @@
         audio {
             width: 100%;
             height: 32px;
-            filter: invert(100%);
+            filter: invert(100%) hue-rotate(180deg) brightness(1.5);
             border-radius: 8px;
             background: rgba(0,0,0,0.2);
         }
@@ -301,9 +301,9 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .status-success { background: #ffffff; color: #000000; border: 1px solid #ffffff; }
-        .status-error { background: rgba(255, 255, 255, 0.1); color: #ffffff; border: 1px solid #ffffff; }
-        .status-processing { background: rgba(255, 255, 255, 0.05); color: var(--primary); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .status-success { background: rgba(0, 255, 136, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .status-error { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .status-processing { background: rgba(255, 102, 204, 0.1); color: var(--primary); border: 1px solid var(--primary); }
 
         .sarcasm {
             font-style: italic;
@@ -325,11 +325,7 @@
         <form id="ncForm">
             <div class="form-group">
                 <label>YouTube URL</label>
-                <input type="text" id="url" required 
-                       placeholder="https://youtube.com/watch?v=..." 
-                       autocomplete="off"
-                       pattern="^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/.+$"
-                       title="Please enter a valid YouTube URL">
+                <input type="text" id="url" required placeholder="https://youtube.com/watch?v=..." autocomplete="off">
             </div>
 
             <div class="section">
@@ -541,26 +537,12 @@
             }
         };
 
-        function isValidYoutubeUrl(url) {
-            const regex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be|youtube-nocookie\.com)\/.+$/;
-            return regex.test(url);
-        }
-
         const form = document.getElementById('ncForm');
         const btn = document.getElementById('submitBtn');
         const status = document.getElementById('status');
 
         form.onsubmit = async (e) => {
             e.preventDefault();
-            const url = document.getElementById('url').value;
-
-            if (!isValidYoutubeUrl(url)) {
-                status.style.display = 'block';
-                status.className = 'status-error';
-                status.innerHTML = '<div>❌ That is not a YouTube link. Stop trying to break me.</div>';
-                return;
-            }
-
             btn.disabled = true;
             status.style.display = 'block';
             status.className = 'status-processing';

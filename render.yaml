@@ -2,7 +2,11 @@ services:
   - type: web
     name: nightcore-generator
     env: python
-    buildCommand: ./build.sh
+    buildCommand: |
+      pip install -r requirements.txt
+      apt-get update
+      apt-get install -y ffmpeg
+      pip install yt-dlp
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION

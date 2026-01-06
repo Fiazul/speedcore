@@ -9,10 +9,6 @@ from api.models import GenerateRequest, GenerateResponse
 from services.audio_service import AudioService, AudioProcessingError
 from core.config import TEMP_FOLDER, SARCASM_SUCCESS, SARCASM_ERROR, BASE_DIR
 
-from slowapi import Limiter
-from slowapi.util import get_remote_address
-
-limiter = Limiter(key_func=get_remote_address)
 router = APIRouter()
 
 # Single-request concurrency lock
@@ -25,8 +21,7 @@ async def index():
         return f.read()
 
 @router.post("/generate", response_model=GenerateResponse)
-@limiter.limit("2/minute")
-async def generate(req: GenerateRequest, request: Request):
+async def generate(req: GenerateRequest):
     if not req.url:
         return GenerateResponse(success=False, error="URL required", sarcasm=random.choice(SARCASM_ERROR))
     
