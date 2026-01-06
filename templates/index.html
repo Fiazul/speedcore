@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musica | Sarcastic Nightcore</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff66cc;
+            --primary-hover: #ff3399;
+            --bg: #0f0f12;
+            --card-bg: #1a1a20;
+            --input-bg: #25252e;
+            --text: #e0e0e0;
+            --text-muted: #88889a;
+            --danger: #ff4d4d;
+            --success: #00ff88;
+            --warning: #ffcc00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 102, 204, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--primary), #cc66ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .beta-warning {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid var(--warning);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: var(--warning);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .beta-warning span { font-weight: 700; }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--input-bg);
+            color: #fff;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(255, 102, 204, 0.1);
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .slider-group {
+            margin-bottom: 15px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .slider-value {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: var(--input-bg);
+            border-radius: 5px;
+            appearance: none;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(255, 102, 204, 0.5);
+            transition: transform 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 102, 204, 0.3);
+        }
+
+        button:active { transform: translateY(0); }
+
+        button:disabled {
+            background: #444;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #status {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 0.95rem;
+            animation: fadeIn 0.3s ease;
+            display: none;
+        }
+
+        .local-downloads {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .download-item {
+            background: var(--input-bg);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+        }
+
+        .download-item:hover {
+            transform: scale(1.02);
+        }
+
+        .download-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .download-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .download-actions a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .download-actions a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .status-success { background: rgba(0, 255, 136, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .status-error { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .status-processing { background: rgba(255, 102, 204, 0.1); color: var(--primary); border: 1px solid var(--primary); }
+
+        .sarcasm {
+            font-style: italic;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Musica</h1>
+        <p class="subtitle">Processing your bad taste in music since today.</p>
+
+        <div class="beta-warning">
+            <p><span>LOCAL PERSISTENCE ENABLED:</span> I'll save your audio to your browser's local storage so you don't lose it when I clean up my server. You're welcome.</p>
+        </div>
+
+        <form id="ncForm">
+            <div class="form-group">
+                <label>YouTube URL</label>
+                <input type="text" id="url" required placeholder="https://youtube.com/watch?v=..." autocomplete="off">
+            </div>
+
+            <div class="section">
+                <div class="section-title">Quick Presets</div>
+                <div class="form-group">
+                    <label>Mode</label>
+                    <select id="mode">
+                        <option value="custom">Custom (I know what I'm doing)</option>
+                        <option value="best">Best (Balanced & Safe)</option>
+                        <option value="adult">Adult (Slower, deeper, meaningful?)</option>
+                        <option value="pedo">Classic (The high-pitched chipmunk one)</option>
+                        <option value="vocalfree">Vocal Free (EXPERIMENTAL / BETA)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section" id="advancedSection">
+                <div class="section-title">Advanced Tuning</div>
+                
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <label>Pitch & Speed Multiplier</label>
+                        <span class="slider-value" id="sampleRateVal">1.20</span>
+                    </div>
+                    <input type="range" id="sampleRate" min="0.5" max="2.0" step="0.05" value="1.2">
+                    <p class="hint"><strong>Guide:</strong> 1.20-1.35 is standard Nightcore. 1.0 is original pitch.</p>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <label>Tempo (Speed Only)</label>
+                        <span class="slider-value" id="tempoVal">1.00</span>
+                    </div>
+                    <input type="range" id="tempo" min="0.5" max="2.0" step="0.05" value="1.0">
+                    <p class="hint"><strong>Guide:</strong> Faster speed WITHOUT the chipmunk effect. Try 1.10 for energy.</p>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <label>Bass Boost</label>
+                        <span class="slider-value" id="bassBoostVal">0 dB</span>
+                    </div>
+                    <input type="range" id="bassBoost" min="-10" max="10" step="1" value="0">
+                    <p class="hint"><strong>Guide:</strong> 3-5 dB for punch. >8 dB might distort your cheap speakers.</p>
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-header">
+                        <label>Vocal Clarity (Mid)</label>
+                        <span class="slider-value" id="midBoostVal">0 dB</span>
+                    </div>
+                    <input type="range" id="midBoost" min="-10" max="10" step="1" value="0">
+                    <p class="hint"><strong>Guide:</strong> 2-4 dB helps high-pitched vocals cut through the noise.</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Export Format</label>
+                <select id="format">
+                    <option value="flac">FLAC (For audiophiles with too much disk space)</option>
+                    <option value="mp3">MP3 (Good enough for your ears)</option>
+                </select>
+            </div>
+
+            <button type="submit" id="submitBtn">Generate Nightcore</button>
+        </form>
+
+        <div id="status"></div>
+
+        <div class="local-downloads" id="localDownloadsSection" style="display: none;">
+            <div class="section-title">Your Local Collection</div>
+            <div id="downloadsList"></div>
+        </div>
+    </div>
+
+    <script>
+        // IndexedDB Logic
+        const DB_NAME = 'MusicaDB';
+        const DB_VERSION = 1;
+        const STORE_NAME = 'audio_files';
+
+        let db;
+
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
+            }
+        };
+        request.onsuccess = (e) => {
+            db = e.target.result;
+            loadLocalDownloads();
+        };
+
+        async function saveToLocal(blob, filename, sarcasm) {
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            const item = {
+                blob,
+                filename,
+                sarcasm,
+                timestamp: new Date().getTime()
+            };
+            store.add(item);
+            transaction.oncomplete = () => loadLocalDownloads();
+        }
+
+        async function loadLocalDownloads() {
+            const transaction = db.transaction([STORE_NAME], 'readonly');
+            const store = transaction.objectStore(STORE_NAME);
+            const request = store.getAll();
+
+            request.onsuccess = () => {
+                const list = document.getElementById('downloadsList');
+                const section = document.getElementById('localDownloadsSection');
+                const items = request.result.sort((a,b) => b.timestamp - a.timestamp);
+
+                if (items.length > 0) {
+                    section.style.display = 'block';
+                    list.innerHTML = items.map(item => {
+                        const url = URL.createObjectURL(item.blob);
+                        const date = new Date(item.timestamp).toLocaleTimeString();
+                        return `
+                            <div class="download-item">
+                                <div class="download-info">
+                                    <strong>${item.filename}</strong>
+                                    <span class="hint">${date}</span>
+                                </div>
+                                <div class="download-actions">
+                                    <a href="${url}" download="${item.filename}">Download</a>
+                                    <a href="#" onclick="deleteItem(${item.id}); return false;" style="color: var(--danger);">Forget</a>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    section.style.display = 'none';
+                }
+            };
+        }
+
+        function deleteItem(id) {
+            const transaction = db.transaction([STORE_NAME], 'readwrite');
+            const store = transaction.objectStore(STORE_NAME);
+            store.delete(id);
+            transaction.oncomplete = () => loadLocalDownloads();
+        }
+
+        const sliders = {
+            sampleRate: 'sampleRateVal',
+            tempo: 'tempoVal',
+            bassBoost: 'bassBoostVal',
+            midBoost: 'midBoostVal'
+        };
+
+        Object.keys(sliders).forEach(id => {
+            const input = document.getElementById(id);
+            const display = document.getElementById(sliders[id]);
+            input.oninput = () => {
+                const suffix = id.includes('Boost') ? ' dB' : '';
+                display.textContent = parseFloat(input.value).toFixed(2) + suffix;
+            };
+        });
+
+        document.getElementById('mode').onchange = (e) => {
+            const presets = {
+                adult: { sampleRate: 1.20, tempo: 1.0, bass: 0, mid: 3 },
+                pedo: { sampleRate: 1.35, tempo: 1.0, bass: 0, mid: 0 },
+                best: { sampleRate: 1.27, tempo: 1.0, bass: 0, mid: 3 },
+                vocalfree: { sampleRate: 1.0, tempo: 1.0, bass: 0, mid: 0 }
+            };
+
+            const preset = presets[e.target.value];
+            if (preset) {
+                document.getElementById('sampleRate').value = preset.sampleRate;
+                document.getElementById('tempo').value = preset.tempo;
+                document.getElementById('bassBoost').value = preset.bass;
+                document.getElementById('midBoost').value = preset.mid;
+
+                Object.keys(sliders).forEach(id => document.getElementById(id).oninput());
+                document.getElementById('advancedSection').style.opacity = e.target.value === 'custom' ? '1' : '0.5';
+                document.getElementById('advancedSection').style.pointerEvents = e.target.value === 'custom' ? 'all' : 'none';
+            } else {
+                document.getElementById('advancedSection').style.opacity = '1';
+                document.getElementById('advancedSection').style.pointerEvents = 'all';
+            }
+        };
+
+        const form = document.getElementById('ncForm');
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            btn.disabled = true;
+            status.style.display = 'block';
+            status.className = 'status-processing';
+            status.innerHTML = '<div>⏳ Processing... I\'m actually doing work. Surprise.</div>';
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        url: document.getElementById('url').value,
+                        mode: document.getElementById('mode').value,
+                        format: document.getElementById('format').value,
+                        sampleRate: parseFloat(document.getElementById('sampleRate').value),
+                        tempo: parseFloat(document.getElementById('tempo').value),
+                        bassBoost: parseInt(document.getElementById('bassBoost').value),
+                        midBoost: parseInt(document.getElementById('midBoost').value)
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    status.innerHTML = '<div>📥 Downloading to your browser cache...</div>';
+                    
+                    // Fetch the file and save to IndexedDB
+                    const fileResponse = await fetch(`/download/${data.filename}`);
+                    const blob = await fileResponse.blob();
+                    await saveToLocal(blob, data.filename, data.sarcasm);
+
+                    status.className = 'status-success';
+                    status.innerHTML = `
+                        <div>✅ Done. It's in your "Local Collection" now.</div>
+                        <div class="sarcasm">"${data.sarcasm}"</div>
+                    `;
+                } else {
+                    status.className = 'status-error';
+                    status.innerHTML = `
+                        <div>❌ Error: ${data.error}</div>
+                        <div class="sarcasm">"${data.sarcasm}"</div>
+                    `;
+                }
+            } catch (err) {
+                status.className = 'status-error';
+                status.textContent = '❌ Something went horribly wrong: ' + err.message;
+            } finally {
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
