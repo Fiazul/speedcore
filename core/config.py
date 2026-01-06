@@ -12,8 +12,8 @@ TEMP_FOLDER = os.path.join(HOME, "musica", "nightcore_temp")
 os.makedirs(TEMP_FOLDER, exist_ok=True)
 
 # Cleanup Settings (in seconds)
-CLEANUP_INTERVAL = 600
-FILE_EXPIRY_TIME = 600
+CLEANUP_INTERVAL = 60    # Check every minute
+FILE_EXPIRY_TIME = 120   # Delete after 2 minutes
 
 # App Settings
 APP_TITLE = "Musica - Sarcastic Nightcore Generator"
