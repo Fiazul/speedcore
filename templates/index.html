@@ -374,12 +374,14 @@
             loadLocalDownloads();
         };
 
-        async function saveToLocal(blob, filename, sarcasm) {
+        async function saveToLocal(processedBlob, originalBlob, processedName, originalName, sarcasm) {
             const transaction = db.transaction([STORE_NAME], 'readwrite');
             const store = transaction.objectStore(STORE_NAME);
             const item = {
-                blob,
-                filename,
+                processedBlob,
+                originalBlob,
+                processedName,
+                originalName,
                 sarcasm,
                 timestamp: new Date().getTime()
             };
@@ -400,16 +402,18 @@
                 if (items.length > 0) {
                     section.style.display = 'block';
                     list.innerHTML = items.map(item => {
-                        const url = URL.createObjectURL(item.blob);
+                        const processedUrl = URL.createObjectURL(item.processedBlob);
+                        const originalUrl = URL.createObjectURL(item.originalBlob);
                         const date = new Date(item.timestamp).toLocaleTimeString();
                         return `
                             <div class="download-item">
                                 <div class="download-info">
-                                    <strong>${item.filename}</strong>
+                                    <strong>${item.processedName}</strong>
                                     <span class="hint">${date}</span>
                                 </div>
                                 <div class="download-actions">
-                                    <a href="${url}" download="${item.filename}">Download</a>
+                                    <a href="${processedUrl}" download="${item.processedName}">Nightcore</a>
+                                    <a href="${originalUrl}" download="${item.originalName}">Original</a>
                                     <a href="#" onclick="deleteItem(${item.id}); return false;" style="color: var(--danger);">Forget</a>
                                 </div>
                             </div>
@@ -497,23 +501,21 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    status.innerHTML = '<div>📥 Downloading files to your browser cache...</div>';
+                    status.innerHTML = '<div>📥 Downloading BOTH versions to your browser...</div>';
                     
-                    // Fetch nightcore
-                    const ncFileResponse = await fetch(`/download/${data.filename}`);
-                    const ncBlob = await ncFileResponse.blob();
-                    await saveToLocal(ncBlob, data.filename, data.sarcasm);
+                    // Fetch processed
+                    const processedResponse = await fetch(`/download/${data.filename}`);
+                    const processedBlob = await processedResponse.blob();
 
-                    // Fetch original if provided
-                    if (data.originalFilename) {
-                        const origFileResponse = await fetch(`/download/${data.originalFilename}`);
-                        const origBlob = await origFileResponse.blob();
-                        await saveToLocal(origBlob, data.originalFilename, "Original audio kept for your convenience.");
-                    }
+                    // Fetch original
+                    const originalResponse = await fetch(`/download/${data.originalFilename}`);
+                    const originalBlob = await originalResponse.blob();
+
+                    await saveToLocal(processedBlob, originalBlob, data.filename, data.originalFilename, data.sarcasm);
 
                     status.className = 'status-success';
                     status.innerHTML = `
-                        <div>✅ Done. Both original and nightcore are in your "Local Collection".</div>
+                        <div>✅ Done. Both versions are in your "Local Collection".</div>
                         <div class="sarcasm">"${data.sarcasm}"</div>
                     `;
                 } else {

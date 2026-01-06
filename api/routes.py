@@ -32,9 +32,10 @@ async def generate(req: GenerateRequest):
         try:
             # Download
             input_path = AudioService.download_audio(req.url)
+            original_filename = os.path.basename(input_path)
             
             # Process
-            filename, original_filename = AudioService.process_nightcore(input_path, req.dict())
+            filename = AudioService.process_nightcore(input_path, req.dict())
             
             sarcasm = random.choice(SARCASM_SUCCESS)
             if is_busy:
