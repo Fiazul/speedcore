@@ -34,8 +34,9 @@ class AudioService:
             '-x', 
             '--audio-format', 'flac',
             '--audio-quality', '0',
+            '-f', 'bestaudio/best',  # Explicitly download best available audio source
             # Aggressive bot bypass (ios client is most reliable)
-            '--extractor-args', 'youtube:player_client=ios,android_creator;player_skip=webpage,configs',
+            '--extractor-args', 'youtube:player_client=android',
         ]
 
         # Use cookies if available
