@@ -28,8 +28,16 @@ class AudioService:
             }],
             'quiet': True,
             'no_warnings': True,
-            # 'cookiefile': 'cookies.txt',  # Uncomment if you have a cookies file
         }
+        
+        # Prioritize cookies.txt if it exists (for Render/Server)
+        if os.path.exists('cookies.txt'):
+            print("[AudioService] Using cookies.txt for authentication.")
+            ydl_opts['cookiefile'] = 'cookies.txt'
+        else:
+            # Fallback to browser cookies (for Local Dev)
+            print("[AudioService] Using browser cookies (Chrome).")
+            ydl_opts['cookiesfrombrowser'] = ('chrome',)
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:

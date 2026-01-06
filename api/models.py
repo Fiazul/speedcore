@@ -11,6 +11,9 @@ class GenerateRequest(BaseModel):
     midBoost: int = 0
     trebleBoost: int = 0
 
+class CookieUpdateRequest(BaseModel):
+    content: str
+
 class GenerateResponse(BaseModel):
     success: bool
     filename: Optional[str] = None
