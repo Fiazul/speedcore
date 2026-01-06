@@ -24,15 +24,18 @@ class AudioService:
             '-x', 
             '--audio-format', 'flac',
             '--audio-quality', '0',
-            # Bypass bot detection
-            '--extractor-args', 'youtube:player_client=android,web',
-            '--add-header', 'User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-            '--add-header', 'Accept:text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            # Aggressive bot bypass (ios client is most reliable)
+            '--extractor-args', 'youtube:player_client=ios,android_creator;player_skip=webpage,configs',
         ]
 
+        # Try cookies in order of preference
         if os.path.exists(cookies_path):
             print(f"[AudioService] Using cookies from: {cookies_path}")
             download_cmd.extend(['--cookies', cookies_path])
+        else:
+            # Fallback: try to extract cookies from browser automatically
+            print("[AudioService] No cookies.txt found, attempting to extract from browser...")
+            download_cmd.extend(['--cookies-from-browser', 'chrome'])
         
         download_cmd.extend([
             url,
