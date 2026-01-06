@@ -1,0 +1,8 @@
+venv/
+__pycache__/
+*.pyc
+nightcore_temp/
+.env
+.vscode/
+.idea/
+*.log
